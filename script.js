@@ -1,34 +1,68 @@
-// ======================== MENU TOGGLE ========================
+/**
+ * Premium Portfolio - Refactored JavaScript
+ * Uses Vanilla JS only - No heavy libraries
+ * Intersection Observer for scroll animations
+ */
+
+// ======================== SCROLL REVEAL OBSERVER ========================
+// Initialize Intersection Observer for scroll reveal animations
+const revealElements = document.querySelectorAll('[data-reveal]');
+const revealObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      // Get delay from data attribute
+      const delay = entry.target.getAttribute('data-reveal-delay') || '0';
+      
+      // Apply delay if specified
+      if (delay !== '0') {
+        entry.target.style.transitionDelay = `${delay}ms`;
+      }
+      
+      // Add revealed class to trigger animation
+      entry.target.classList.add('revealed');
+      
+      // Stop observing this element after it's revealed (for performance)
+      revealObserver.unobserve(entry.target);
+    }
+  });
+}, {
+  threshold: 0.15, // Trigger when 15% of element is visible
+  rootMargin: '0px 0px -50px 0px' // Start revealing slightly before viewport
+});
+
+// Observe all reveal elements
+revealElements.forEach(el => revealObserver.observe(el));
+
+// ======================== MOBILE MENU TOGGLE ========================
 const navToggle = document.getElementById('navToggle');
 const navLinks = document.getElementById('navLinks');
 
-navToggle?.addEventListener('click', () => {
-  navLinks.classList.toggle('active');
-});
-
-// Close menu when link is clicked
-document.querySelectorAll('.nav-links a').forEach(link => {
-  link.addEventListener('click', () => {
-    navLinks.classList.remove('active');
+if (navToggle) {
+  navToggle.addEventListener('click', () => {
+    navLinks.classList.toggle('active');
   });
-});
+
+  // Close menu when a link is clicked
+  document.querySelectorAll('.nav-links a').forEach(link => {
+    link.addEventListener('click', () => {
+      navLinks.classList.remove('active');
+    });
+  });
+}
 
 // ======================== NAVBAR SCROLL EFFECT ========================
 const navbar = document.querySelector('.navbar');
-let lastScrollTop = 0;
 
 window.addEventListener('scroll', () => {
-  let scrollTop = window.scrollY;
-  if (scrollTop > 100) {
+  if (window.scrollY > 100) {
     navbar.classList.add('scrolled');
   } else {
     navbar.classList.remove('scrolled');
   }
-  lastScrollTop = scrollTop;
 });
 
 // ======================== TYPEWRITER EFFECT ========================
-const texts = [
+const roles = [
   'Backend Engineer',
   'Cyber Security Specialist',
   'DevOps Enthusiast',
@@ -36,136 +70,168 @@ const texts = [
   'Cloud Architect'
 ];
 
-let count = 0;
-let index = 0;
-let currentText = '';
-let letter = '';
+let roleIndex = 0;
+let charIndex = 0;
 let isDeleting = false;
 
-function typeWriter() {
-  if (count === texts.length) {
-    count = 0;
-  }
-  currentText = texts[count];
-
-  if (isDeleting) {
-    letter = currentText.slice(0, --index);
-  } else {
-    letter = currentText.slice(0, ++index);
-  }
-
+function typewriter() {
   const typewriterEl = document.getElementById('typewriter');
-  if (typewriterEl) {
-    typewriterEl.textContent = letter;
-  }
+  if (!typewriterEl) return;
 
-  let typeSpeed = 80;
+  const currentRole = roles[roleIndex];
 
   if (isDeleting) {
-    typeSpeed /= 2;
+    charIndex--;
+  } else {
+    charIndex++;
   }
 
-  if (!isDeleting && letter.length === currentText.length) {
-    typeSpeed = 2000; // Pause at the end of word
+  // Update text
+  typewriterEl.textContent = currentRole.substring(0, charIndex);
+
+  // Determine typing speed
+  let speed = isDeleting ? 40 : 80;
+
+  // If word is complete, prepare to delete
+  if (!isDeleting && charIndex === currentRole.length) {
+    speed = 2000; // Pause at end
     isDeleting = true;
-  } else if (isDeleting && letter.length === 0) {
+  } 
+  // If word is deleted, move to next word
+  else if (isDeleting && charIndex === 0) {
     isDeleting = false;
-    count++;
-    typeSpeed = 500; // Pause before typing next word
+    roleIndex = (roleIndex + 1) % roles.length;
+    speed = 500; // Pause before typing
   }
 
-  setTimeout(typeWriter, typeSpeed);
+  setTimeout(typewriter, speed);
 }
 
-// Start typing effect on load
-document.addEventListener('DOMContentLoaded', typeWriter);
+// Start typewriter on DOM ready
+document.addEventListener('DOMContentLoaded', typewriter);
 
 // ======================== PARTICLE BACKGROUND ========================
-const canvas = document.getElementById('particleCanvas');
-if (canvas) {
-  const ctx = canvas.getContext('2d');
-  let particlesArray = [];
+class ParticleNetwork {
+  constructor() {
+    this.canvas = document.getElementById('particleCanvas');
+    if (!this.canvas) return;
 
-  // Set canvas size
-  function resizeCanvas() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-  }
-  resizeCanvas();
-  window.addEventListener('resize', resizeCanvas);
+    this.ctx = this.canvas.getContext('2d');
+    this.particles = [];
+    this.particleCount = 100;
+    this.connectionDistance = 100;
+    this.mouseX = 0;
+    this.mouseY = 0;
 
-  // Particle class
-  class Particle {
-    constructor() {
-      this.x = Math.random() * canvas.width;
-      this.y = Math.random() * canvas.height;
-      this.size = Math.random() * 2 + 0.5;
-      this.speedX = Math.random() * 0.5 - 0.25;
-      this.speedY = Math.random() * 0.5 - 0.25;
-      this.opacity = Math.random() * 0.5 + 0.2;
-    }
-
-    draw() {
-      ctx.fillStyle = `rgba(0, 212, 255, ${this.opacity})`;
-      ctx.beginPath();
-      ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      ctx.fill();
-    }
-
-    update() {
-      this.x += this.speedX;
-      this.y += this.speedY;
-
-      // Wrap around edges
-      if (this.x > canvas.width) this.x = 0;
-      if (this.x < 0) this.x = canvas.width;
-      if (this.y > canvas.height) this.y = 0;
-      if (this.y < 0) this.y = canvas.height;
-    }
+    this.init();
   }
 
-  // Initialize particles
-  function initParticles() {
-    particlesArray = [];
-    for (let i = 0; i < 100; i++) {
-      particlesArray.push(new Particle());
+  init() {
+    this.resizeCanvas();
+    this.createParticles();
+    this.animate();
+    window.addEventListener('resize', () => this.resizeCanvas());
+    document.addEventListener('mousemove', (e) => {
+      this.mouseX = e.clientX;
+      this.mouseY = e.clientY;
+    });
+  }
+
+  resizeCanvas() {
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+  }
+
+  createParticles() {
+    this.particles = [];
+    for (let i = 0; i < this.particleCount; i++) {
+      this.particles.push({
+        x: Math.random() * this.canvas.width,
+        y: Math.random() * this.canvas.height,
+        size: Math.random() * 1.5 + 0.5,
+        speedX: (Math.random() - 0.5) * 0.3,
+        speedY: (Math.random() - 0.5) * 0.3,
+        opacity: Math.random() * 0.5 + 0.2
+      });
     }
   }
-  initParticles();
 
-  // Animal loop
-  function animateParticles() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawParticle(particle) {
+    this.ctx.fillStyle = `rgba(0, 212, 255, ${particle.opacity})`;
+    this.ctx.beginPath();
+    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
+    this.ctx.fill();
+  }
 
-    for (let i = 0; i < particlesArray.length; i++) {
-      particlesArray[i].draw();
-      particlesArray[i].update();
-
-      // Draw connecting lines
-      for (let j = i + 1; j < particlesArray.length; j++) {
-        const dx = particlesArray[i].x - particlesArray[j].x;
-        const dy = particlesArray[i].y - particlesArray[j].y;
+  drawConnections() {
+    for (let i = 0; i < this.particles.length; i++) {
+      for (let j = i + 1; j < this.particles.length; j++) {
+        const dx = this.particles[i].x - this.particles[j].x;
+        const dy = this.particles[i].y - this.particles[j].y;
         const distance = Math.sqrt(dx * dx + dy * dy);
 
-        if (distance < 100) {
-          ctx.strokeStyle = `rgba(0, 212, 255, ${0.2 * (1 - distance / 100)})`;
-          ctx.lineWidth = 0.5;
-          ctx.beginPath();
-          ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
-          ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
-          ctx.stroke();
+        if (distance < this.connectionDistance) {
+          const opacity = (1 - distance / this.connectionDistance) * 0.2;
+          this.ctx.strokeStyle = `rgba(0, 212, 255, ${opacity})`;
+          this.ctx.lineWidth = 0.5;
+          this.ctx.beginPath();
+          this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
+          this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
+          this.ctx.stroke();
         }
       }
     }
-
-    requestAnimationFrame(animateParticles);
   }
-  animateParticles();
+
+  updateParticles() {
+    this.particles.forEach(particle => {
+      // Move particle
+      particle.x += particle.speedX;
+      particle.y += particle.speedY;
+
+      // Wrap around edges
+      if (particle.x > this.canvas.width) particle.x = 0;
+      if (particle.x < 0) particle.x = this.canvas.width;
+      if (particle.y > this.canvas.height) particle.y = 0;
+      if (particle.y < 0) particle.y = this.canvas.height;
+
+      // Mouse interaction
+      const dx = particle.x - this.mouseX;
+      const dy = particle.y - this.mouseY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+      if (distance < 150) {
+        const angle = Math.atan2(dy, dx);
+        const force = (150 - distance) / 150;
+        particle.speedX += Math.cos(angle) * force * 0.3;
+        particle.speedY += Math.sin(angle) * force * 0.3;
+      }
+
+      // Dampen velocity
+      particle.speedX *= 0.99;
+      particle.speedY *= 0.99;
+    });
+  }
+
+  animate() {
+    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    
+    this.updateParticles();
+    
+    this.particles.forEach(particle => this.drawParticle(particle));
+    this.drawConnections();
+
+    requestAnimationFrame(() => this.animate());
+  }
 }
+
+// Initialize particle network on DOM ready
+document.addEventListener('DOMContentLoaded', () => {
+  new ParticleNetwork();
+});
 
 // ======================== SMOOTH SCROLLING ========================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function (e) {
+  anchor.addEventListener('click', function(e) {
     e.preventDefault();
     const target = document.querySelector(this.getAttribute('href'));
     if (target) {
@@ -177,71 +243,67 @@ document.querySelectorAll('a[href^="#"]').forEach(anchor => {
   });
 });
 
-// ======================== INITIALIZE AOS ========================
-document.addEventListener('DOMContentLoaded', function() {
-  AOS.init({
-    duration: 800,
-    easing: 'ease-out',
-    once: true,
-    offset: 100,
-    delay: 0
-  });
-});
-
 // ======================== GITHUB API - FETCH PROJECTS ========================
 async function fetchGitHubProjects() {
-  const username = 'danishansari-dev'; // Replace with your GitHub username
+  const username = 'danishansari-dev';
   const projectsContainer = document.getElementById('projectsContainer');
 
   if (!projectsContainer) return;
 
   try {
-    // Fetch repositories from GitHub API
-    const response = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&per_page=6`);
+    const response = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&per_page=6`, {
+      headers: {
+        'Accept': 'application/vnd.github.v3+json'
+      }
+    });
+
+    if (!response.ok) throw new Error('Failed to fetch repositories');
+
     const repos = await response.json();
 
     if (!Array.isArray(repos) || repos.length === 0) {
-      projectsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No repositories found. Update the GitHub username in the script.</p>';
+      projectsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No repositories found. Update the GitHub username in script.js to see your projects.</p>';
       return;
     }
 
     projectsContainer.innerHTML = '';
 
-    repos.forEach(repo => {
-      const projectCard = createProjectCard(repo);
-      projectsContainer.appendChild(projectCard);
+    repos.forEach((repo, index) => {
+      const card = createProjectCard(repo, index);
+      projectsContainer.appendChild(card);
     });
 
-    // Refresh AOS
-    AOS.refresh();
+    // Re-observe new elements for scroll animation
+    document.querySelectorAll('[data-reveal]').forEach(el => {
+      if (!el.classList.contains('revealed')) {
+        revealObserver.observe(el);
+      }
+    });
+
   } catch (error) {
     console.error('Error fetching repositories:', error);
     projectsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Unable to load projects. Please try again later.</p>';
   }
 }
 
-function createProjectCard(repo) {
+function createProjectCard(repo, index) {
   const card = document.createElement('div');
   card.className = 'project-card';
-  card.setAttribute('data-aos', 'fade-up');
-
-  const languages = [
-    repo.language || 'JavaScript',
-    repo.topics?.[0] || 'Web'
-  ].filter(Boolean);
+  card.setAttribute('data-reveal', 'fade-up');
+  card.setAttribute('data-reveal-delay', (index * 50).toString());
 
   const stars = repo.stargazers_count > 0 ? `${repo.stargazers_count} ⭐` : 'Repository';
 
   card.innerHTML = `
-    <h3>${repo.name}</h3>
-    <p>${repo.description || 'No description available'}</p>
+    <h3>${escapeHtml(repo.name)}</h3>
+    <p>${escapeHtml(repo.description || 'No description available')}</p>
     <div class="project-meta">
       <span class="project-date">Updated: ${new Date(repo.updated_at).toLocaleDateString()}</span>
       <span class="project-stars">${stars}</span>
     </div>
     <div class="tags">
-      ${repo.language ? `<span>${repo.language}</span>` : ''}
-      ${repo.topics?.slice(0, 2).map(topic => `<span>${topic}</span>`).join('') || '<span>Open Source</span>'}
+      ${repo.language ? `<span>${escapeHtml(repo.language)}</span>` : ''}
+      ${repo.topics?.slice(0, 2).map(topic => `<span>${escapeHtml(topic)}</span>`).join('') || '<span>Open Source</span>'}
     </div>
     <div class="project-links">
       <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
@@ -253,7 +315,18 @@ function createProjectCard(repo) {
   return card;
 }
 
-// Fetch projects when page loads
+// Escape HTML to prevent XSS
+function escapeHtml(unsafe) {
+  if (!unsafe) return '';
+  return unsafe
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
+// Fetch projects on load
 document.addEventListener('DOMContentLoaded', fetchGitHubProjects);
 
 // ======================== CONTACT FORM ========================
@@ -263,42 +336,65 @@ if (contactForm) {
   contactForm.addEventListener('submit', function(e) {
     e.preventDefault();
 
-    const name = this.querySelector('input[type="text"]').value;
-    const email = this.querySelector('input[type="email"]').value;
-    const message = this.querySelector('textarea').value;
+    const nameInput = this.querySelector('input[type="text"]');
+    const emailInput = this.querySelector('input[type="email"]');
+    const messageInput = this.querySelector('textarea');
 
-    // Validate
-    if (!name.trim() || !email.trim() || !message.trim()) {
-      alert('Please fill in all fields');
+    const name = nameInput.value.trim();
+    const email = emailInput.value.trim();
+    const message = messageInput.value.trim();
+
+    if (!name || !email || !message) {
+      showNotification('Please fill in all fields', 'error');
       return;
     }
 
     // Create mailto link
-    const mailtoLink = `mailto:danish@example.com?subject=Contact from ${encodeURIComponent(name)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
+    const mailtoLink = `mailto:danish@example.com?subject=${encodeURIComponent(`Contact from ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
     window.location.href = mailtoLink;
+
+    // Show success message
+    showNotification('Message sent! Opening your default email client...', 'success');
 
     // Reset form
     this.reset();
   });
 }
 
-// ======================== FORM INPUT FOCUS EFFECT ========================
-document.querySelectorAll('.form-input').forEach(input => {
-  input.addEventListener('focus', function() {
-    this.parentElement.classList.add('focused');
-  });
+// Show notifications
+function showNotification(message, type = 'info') {
+  // Create notification element
+  const notification = document.createElement('div');
+  notification.style.cssText = `
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 1rem 1.5rem;
+    background: ${type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)'};
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    z-index: 1000;
+    animation: slideIn 0.3s ease-out;
+    backdrop-filter: blur(10px);
+    border: 1px solid ${type === 'error' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'};
+  `;
+  notification.textContent = message;
 
-  input.addEventListener('blur', function() {
-    if (!this.value.trim()) {
-      this.parentElement.classList.remove('focused');
-    }
-  });
-});
+  document.body.appendChild(notification);
+
+  // Remove after 3 seconds
+  setTimeout(() => {
+    notification.style.animation = 'slideOut 0.3s ease-out forwards';
+    setTimeout(() => notification.remove(), 300);
+  }, 3000);
+}
 
 // ======================== SCROLL TO TOP BUTTON ========================
 const scrollToTopBtn = document.createElement('button');
 scrollToTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
 scrollToTopBtn.className = 'scroll-to-top';
+scrollToTopBtn.setAttribute('aria-label', 'Scroll to top');
 scrollToTopBtn.style.cssText = `
   position: fixed;
   bottom: 2rem;
@@ -319,6 +415,7 @@ scrollToTopBtn.style.cssText = `
   display: flex;
   align-items: center;
   justify-content: center;
+  font-weight: 600;
 `;
 
 document.body.appendChild(scrollToTopBtn);
@@ -340,9 +437,8 @@ scrollToTopBtn.addEventListener('click', () => {
   });
 });
 
-// ======================== LOADING SCREEN TIMEOUT ========================
+// ======================== LOADING SCREEN ========================
 window.addEventListener('load', () => {
-  // Remove loading screen after 2 seconds
   const loadingScreen = document.getElementById('loading');
   if (loadingScreen) {
     setTimeout(() => {
@@ -351,29 +447,8 @@ window.addEventListener('load', () => {
   }
 });
 
-// ======================== CURSOR EFFECTS (OPTIONAL) ========================
-document.addEventListener('mousemove', (e) => {
-  const mouseX = e.clientX;
-  const mouseY = e.clientY;
-
-  // Create subtle glow effect on hover of interactive elements
-  document.querySelectorAll('a, button, .project-card, .skill-badge').forEach(el => {
-    const rect = el.getBoundingClientRect();
-    const elX = rect.left + rect.width / 2;
-    const elY = rect.top + rect.height / 2;
-
-    const distance = Math.sqrt(Math.pow(mouseX - elX, 2) + Math.pow(mouseY - elY, 2));
-
-    if (distance < 100) {
-      el.style.transform = `scale(${1 + (100 - distance) / 1000})`;
-    } else {
-      el.style.transform = 'scale(1)';
-    }
-  });
-});
-
 // ======================== CONSOLE MESSAGE ========================
-console.log('%c Welcome to my Portfolio!', 'font-size: 20px; color: #00d4ff; font-weight: bold;');
-console.log('%c Built with HTML, CSS, and Vanilla JavaScript', 'font-size: 14px; color: #9d4edd;');
-console.log('%c Let\\'s connect! 🚀', 'font-size: 14px; color: #00d4ff;');
+console.log('%c✨ Welcome to Danish Ansari\'s Premium Portfolio!', 'font-size: 18px; color: #00d4ff; font-weight: bold;');
+console.log('%c🚀 Built with Vanilla HTML, CSS & JavaScript', 'font-size: 14px; color: #9d4edd;');
+console.log('%c💡 No heavy libraries. Pure performance.', 'font-size: 14px; color: #00d4ff;');
 
