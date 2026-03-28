@@ -1,99 +1,467 @@
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-<nav class="navbar">
-  <div class="logo">M.Shodiyev</div>
-  <ul class="nav-links">
-    <li><a href="#about">Men haqimda</a></li>
-    <li><a href="#experience">Tajriba & Ta'lim</a></li>
-    <li><a href="#skills">Ko'nikmalar</a></li>
-    <li><a href="#projects">Loyihalar</a></li>
-  </ul>
-</nav>
-
-<header class="hero">
-  <div class="hero-content">
-    <h1>Mirshod Shodiyev</h1>
-    <h2 class="typewriter-text"><span id="typewriter"></span><span class="cursor">|</span></h2>
-    <p>Yuqori yuklamali (highload) tizimlar, API arxitekturasi va xavfsiz server infratuzilmalarini qurishga ixtisoslashgan dasturchi.</p>
-    <div class="hero-buttons">
-      <a href="#projects" class="btn primary">Loyihalarni ko'rish</a>
-      <a href="https://www.linkedin.com/" target="_blank" class="btn secondary"><i class="fab fa-linkedin"></i> LinkedIn</a>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Danish Ansari - Full Stack Developer & Cyber Security Enthusiast</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+</head>
+<body>
+  <!-- Loading Animation -->
+  <div id="loading" class="loading-screen">
+    <div class="loader">
+      <div class="loader-ring"></div>
+      <div class="loader-text">Danish Ansari</div>
     </div>
   </div>
-</header>
 
-<section id="about" class="section">
-  <h2 class="section-title">Men haqimda</h2>
-  <div class="about-content">
-    <p>Men asosan <b>PHP, Laravel va PostgreSQL</b> texnologiyalaridan foydalanib, murakkab biznes mantiqqa ega bo'lgan tizimlarni ishlab chiqaman. Kod yozish bilan birga, <b>Docker, Nginx va CI/CD</b> jarayonlarini sozlash orqali loyihalarni serverga uzluksiz integratsiya qilish (DevOps) masalalariga katta e'tibor qarataman. Shuningdek, tizim xavfsizligini ta'minlash maqsadida Kiberxavfsizlik yo'nalishida ham chuqur izlanishlar olib boryapman.</p>
-  </div>
-</section>
+  <!-- Particle Background -->
+  <canvas id="particleCanvas"></canvas>
 
-<section id="experience" class="section">
-  <h2 class="section-title">Tajriba va Ta'lim</h2>
-  <div class="timeline">
-    <div class="timeline-item">
-      <h3>Backend Engineer</h3>
-      <h4>Progress Solution Technologies, Toshkent</h4>
-      <p class="date">May 2025 – Hozirgacha</p>
-      <p>Backend arxitekturasini loyihalash, ma'lumotlar bazasini optimallashtirish va xavfsiz API'larni ishlab chiqish.</p>
+  <!-- Navigation -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-bracket">&lt;</span>danish<span class="logo-accent">AI</span><span class="logo-bracket">/&gt;</span>
+      </div>
+      <div class="nav-toggle" id="navToggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#skills">Skills</a></li>
+        <li><a href="#experience">Experience</a></li>
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
     </div>
-    <div class="timeline-item">
-      <h3>Web Developer</h3>
-      <h4>Codingtech Company, Buxoro</h4>
-      <p class="date">Dekabr 2024 – Fevral 2025</p>
-      <p>Veb-ilovalarni ishlab chiqish va qo'llab-quvvatlash.</p>
-    </div>
-    <div class="timeline-item">
-      <h3>B.Sc. in Cyber Security</h3>
-      <h4>Toshkent Axborot Texnologiyalari Universiteti (TATU)</h4>
-      <p class="date">2023 – 2028</p>
-    </div>
-    <div class="timeline-item">
-      <h3>Full-Stack Web Development</h3>
-      <h4>Najot Ta'lim</h4>
-      <p class="date">2024</p>
-    </div>
-  </div>
-</section>
+  </nav>
 
-<section id="skills" class="section">
-  <h2 class="section-title">Texnik Ko'nikmalar</h2>
-  <div class="skills-grid">
-    <div class="skill-card"><i class="fab fa-laravel"></i> Laravel / PHP</div>
-    <div class="skill-card"><i class="fas fa-database"></i> PostgreSQL</div>
-    <div class="skill-card"><i class="fab fa-docker"></i> Docker</div>
-    <div class="skill-card"><i class="fab fa-linux"></i> Linux (Ubuntu/CentOS)</div>
-    <div class="skill-card"><i class="fas fa-server"></i> Nginx & CI/CD</div>
-    <div class="skill-card"><i class="fas fa-shield-alt"></i> Cyber Security</div>
-    <div class="skill-card"><i class="fas fa-plug"></i> WebSockets & APIs</div>
-    <div class="skill-card"><i class="fas fa-code"></i> CodeIgniter</div>
-  </div>
-</section>
-
-<section id="projects" class="section">
-  <h2 class="section-title">Loyihalar</h2>
-  <div class="projects-grid">
-    <div class="project-card">
-      <h3>Key Management System (KMS)</h3>
-      <p>Sertifikatlarni boshqarish va WebSockets yordamida real vaqtda autentifikatsiya qilish imkonini beruvchi, CRM bilan integratsiya qilingan xavfsiz tizim.</p>
-      <div class="tags"><span>Laravel</span><span>WebSockets</span><span>Security</span></div>
+  <!-- Hero Section -->
+  <section id="home" class="hero">
+    <div class="stars"></div>
+    <div class="hero-content" data-aos="fade-up">
+      <h1 class="hero-title">
+        <span class="gradient-text">Hey, I'm Danish</span>
+      </h1>
+      <h2 class="hero-subtitle">
+        <span class="typewriter" id="typewriter"></span>
+        <span class="cursor">|</span>
+      </h2>
+      <p class="hero-description">
+        I craft elegant solutions through code, securing systems with innovation, and deploying scalable architectures. Passionate about Backend Development, DevOps, and Cyber Security.
+      </p>
+      <div class="hero-actions" data-aos="fade-up" data-aos-delay="200">
+        <a href="#projects" class="btn btn-primary">
+          <span>View My Work</span>
+          <i class="fas fa-arrow-right"></i>
+        </a>
+        <a href="#contact" class="btn btn-outline">
+          <span>Get In Touch</span>
+          <i class="fas fa-envelope"></i>
+        </a>
+      </div>
     </div>
-    <div class="project-card">
-      <h3>"Dasturchi Tog'o" IT Kanali</h3>
-      <p>YouTube va Telegram platformalarida dasturlash, arxitektura va IT sohasi yangiliklari bo'yicha sifatli kontent yaratish loyihasi.</p>
-      <div class="tags"><span>EdTech</span><span>Content Creation</span></div>
+    <div class="hero-glow"></div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="about section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-right">About Me</h2>
+      <div class="about-grid">
+        <div class="about-content" data-aos="fade-up">
+          <p>
+            I'm a passionate Full-Stack Developer with a strong foundation in Backend Engineering and Cyber Security. With expertise in Laravel, Docker, and modern DevOps practices, I build robust, scalable applications that solve real-world problems.
+          </p>
+          <p>
+            Currently pursuing my education in Cyber Security while building enterprise-grade applications. I believe in writing clean, maintainable code and creating secure architectures that can handle millions of transactions.
+          </p>
+          <p>
+            When I'm not coding, you'll find me exploring new technologies, contributing to open-source projects, or diving deeper into cybersecurity research.
+          </p>
+          <div class="about-stats">
+            <div class="stat-item" data-aos="zoom-in">
+              <div class="stat-number">5+</div>
+              <div class="stat-label">Years Experience</div>
+            </div>
+            <div class="stat-item" data-aos="zoom-in" data-aos-delay="100">
+              <div class="stat-number">20+</div>
+              <div class="stat-label">Projects Completed</div>
+            </div>
+            <div class="stat-item" data-aos="zoom-in" data-aos-delay="200">
+              <div class="stat-number">100%</div>
+              <div class="stat-label">Client Satisfaction</div>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual" data-aos="fade-left">
+          <div class="floating-card">
+            <div class="card-glow"></div>
+            <i class="fas fa-code"></i>
+            <h3>Full Stack Dev</h3>
+          </div>
+          <div class="floating-card" style="animation-delay: 0.5s">
+            <div class="card-glow"></div>
+            <i class="fas fa-shield-alt"></i>
+            <h3>Cyber Security</h3>
+          </div>
+          <div class="floating-card" style="animation-delay: 1s">
+            <div class="card-glow"></div>
+            <i class="fas fa-server"></i>
+            <h3>DevOps</h3>
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
-</section>
+  </section>
 
+  <!-- Skills Section -->
+  <section id="skills" class="skills section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-right">Skills & Expertise</h2>
+      
+      <div class="skills-container">
+        <!-- Backend Development -->
+        <div class="skill-category" data-aos="fade-up">
+          <h3 class="category-title">Backend Development</h3>
+          <div class="skill-bar-group">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">PHP / Laravel</span>
+                <span class="skill-level">95%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 95%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Python</span>
+                <span class="skill-level">85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Node.js / Express</span>
+                <span class="skill-level">80%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Database Design (SQL/NoSQL)</span>
+                <span class="skill-level">90%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 90%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
+        <!-- DevOps & Infrastructure -->
+        <div class="skill-category" data-aos="fade-up" data-aos-delay="100">
+          <h3 class="category-title">DevOps & Infrastructure</h3>
+          <div class="skill-bar-group">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Docker & Kubernetes</span>
+                <span class="skill-level">90%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 90%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">CI/CD Pipelines</span>
+                <span class="skill-level">85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">AWS / Cloud Services</span>
+                <span class="skill-level">80%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 80%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Linux & System Administration</span>
+                <span class="skill-level">92%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 92%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
 
-<footer>
-  <p>© 2026 Mirshod Shodiyev. Barcha huquqlar himoyalangan.</p>
-  <div class="social-links">
-    <a href="#"><i class="fab fa-github"></i></a>
-    <a href="#"><i class="fab fa-telegram"></i></a>
-    <a href="#"><i class="fab fa-youtube"></i></a>
-  </div>
-</footer>
+        <!-- Cybersecurity -->
+        <div class="skill-category" data-aos="fade-up" data-aos-delay="200">
+          <h3 class="category-title">Cybersecurity</h3>
+          <div class="skill-bar-group">
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Network Security & Firewalls</span>
+                <span class="skill-level">85%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 85%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Penetration Testing</span>
+                <span class="skill-level">88%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 88%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Application Security</span>
+                <span class="skill-level">87%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 87%"></div>
+              </div>
+            </div>
+            <div class="skill-item">
+              <div class="skill-header">
+                <span class="skill-name">Ethical Hacking (CEH Ready)</span>
+                <span class="skill-level">82%</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill" style="width: 82%"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Frontend & Tools -->
+        <div class="skill-category" data-aos="fade-up" data-aos-delay="300">
+          <h3 class="category-title">Frontend & Tools</h3>
+          <div class="skills-grid">
+            <div class="skill-badge" data-aos="zoom-in">
+              <i class="fab fa-react"></i>
+              <span>React</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="50">
+              <i class="fab fa-js"></i>
+              <span>JavaScript</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="100">
+              <i class="fab fa-html5"></i>
+              <span>HTML/CSS</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="150">
+              <i class="fab fa-git"></i>
+              <span>Git</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="200">
+              <i class="fab fa-docker"></i>
+              <span>Docker</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="250">
+              <i class="fas fa-database"></i>
+              <span>PostgreSQL</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="300">
+              <i class="fab fa-github"></i>
+              <span>GitHub</span>
+            </div>
+            <div class="skill-badge" data-aos="zoom-in" data-aos-delay="350">
+              <i class="fas fa-terminal"></i>
+              <span>CLI Tools</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Experience & Education Section -->
+  <section id="experience" class="experience section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-right">Experience & Education</h2>
+      
+      <div class="timeline-wrapper">
+        <!-- Experience -->
+        <div class="timeline-column">
+          <h3 class="timeline-heading" data-aos="fade-right">Professional Experience</h3>
+          <div class="timeline">
+            <div class="timeline-item" data-aos="fade-up">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <h4 class="timeline-title">Senior Backend Engineer</h4>
+                <p class="timeline-company">Tech Startup XYZ</p>
+                <p class="timeline-date"><i class="fas fa-calendar"></i> 2022 - Present</p>
+                <p class="timeline-description">Led the development of microservices architecture serving 500K+ users. Implemented Docker and Kubernetes orchestration, reducing deployment time by 70%.</p>
+              </div>
+            </div>
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <h4 class="timeline-title">Full Stack Developer</h4>
+                <p class="timeline-company">Digital Solutions Corp</p>
+                <p class="timeline-date"><i class="fas fa-calendar"></i> 2021 - 2022</p>
+                <p class="timeline-description">Developed Laravel-based applications with React frontends. Implemented CI/CD pipelines using GitLab CI, improving deployment efficiency.</p>
+              </div>
+            </div>
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <h4 class="timeline-title">Junior Developer</h4>
+                <p class="timeline-company">StartUp Innovations</p>
+                <p class="timeline-date"><i class="fas fa-calendar"></i> 2020 - 2021</p>
+                <p class="timeline-description">Built RESTful APIs using PHP/Laravel. Collaborated with frontend team to deliver responsive web applications.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Education -->
+        <div class="timeline-column">
+          <h3 class="timeline-heading" data-aos="fade-left">Education</h3>
+          <div class="timeline">
+            <div class="timeline-item" data-aos="fade-up">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <h4 class="timeline-title">B.S. in Cybersecurity</h4>
+                <p class="timeline-company">University of Technology</p>
+                <p class="timeline-date"><i class="fas fa-calendar"></i> 2021 - 2024 (Expected)</p>
+                <p class="timeline-description">Focused on network security, penetration testing, and ethical hacking. GPA: 3.9/4.0</p>
+              </div>
+            </div>
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="100">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <h4 class="timeline-title">Diploma in Web Development</h4>
+                <p class="timeline-company">Code Academy</p>
+                <p class="timeline-date"><i class="fas fa-calendar"></i> 2019 - 2020</p>
+                <p class="timeline-description">Intensive full-stack web development bootcamp. Specialized in Laravel and Modern JavaScript frameworks.</p>
+              </div>
+            </div>
+            <div class="timeline-item" data-aos="fade-up" data-aos-delay="200">
+              <div class="timeline-dot"></div>
+              <div class="timeline-content">
+                <h4 class="timeline-title">High School Diploma</h4>
+                <p class="timeline-company">Central High School</p>
+                <p class="timeline-date"><i class="fas fa-calendar"></i> Graduated 2019</p>
+                <p class="timeline-description">Honors graduate with focus on computer science and mathematics.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Projects Section -->
+  <section id="projects" class="projects section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-right">Featured Projects</h2>
+      <div class="projects-grid" id="projectsContainer">
+        <!-- Projects will be loaded from GitHub API -->
+        <div class="loading-spinner">
+          <div class="spinner"></div>
+          <p>Loading projects from GitHub...</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact Section -->
+  <section id="contact" class="contact section">
+    <div class="container">
+      <h2 class="section-title" data-aos="fade-right">Get In Touch</h2>
+      
+      <div class="contact-wrapper">
+        <div class="contact-info" data-aos="fade-up">
+          <div class="contact-card">
+            <i class="fas fa-envelope"></i>
+            <h3>Email</h3>
+            <a href="mailto:danish@example.com">danish@example.com</a>
+          </div>
+          <div class="contact-card">
+            <i class="fas fa-phone"></i>
+            <h3>Phone</h3>
+            <a href="tel:+1234567890">+1 (234) 567-8900</a>
+          </div>
+          <div class="contact-card">
+            <i class="fas fa-map-marker-alt"></i>
+            <h3>Location</h3>
+            <p>San Francisco, CA</p>
+          </div>
+          <div class="contact-card">
+            <i class="fas fa-link"></i>
+            <h3>Social</h3>
+            <div class="social-links">
+              <a href="https://github.com" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-github"></i>
+              </a>
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-linkedin"></i>
+              </a>
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
+                <i class="fab fa-twitter"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <form class="contact-form" id="contactForm" data-aos="fade-up">
+          <div class="form-group">
+            <input type="text" placeholder="Your Name" required class="form-input">
+            <div class="form-border"></div>
+          </div>
+          <div class="form-group">
+            <input type="email" placeholder="Your Email" required class="form-input">
+            <div class="form-border"></div>
+          </div>
+          <div class="form-group">
+            <textarea placeholder="Your Message" rows="8" required class="form-input"></textarea>
+            <div class="form-border"></div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-large">
+            <span>Send Message</span>
+            <i class="fas fa-paper-plane"></i>
+          </button>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <p>&copy; 2024 Danish Ansari. All rights reserved. | Crafted with <span class="heart">💜</span> by Danish</p>
+      <div class="footer-text">
+        <p>Always learning, always growing. Let's build something amazing together.</p>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
