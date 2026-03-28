@@ -50,16 +50,27 @@ if (navToggle) {
   });
 }
 
-// ======================== NAVBAR SCROLL EFFECT ========================
+// ======================== NAVBAR SCROLL EFFECT (THROTTLED) ========================
 const navbar = document.querySelector('.navbar');
+let scrollTimeout;
 
-window.addEventListener('scroll', () => {
+// Throttle scroll events to every 100ms for better performance
+function throttledScrollHandler() {
   if (window.scrollY > 100) {
     navbar.classList.add('scrolled');
   } else {
     navbar.classList.remove('scrolled');
   }
-});
+}
+
+window.addEventListener('scroll', () => {
+  if (!scrollTimeout) {
+    scrollTimeout = setTimeout(() => {
+      throttledScrollHandler();
+      scrollTimeout = null;
+    }, 100);
+  }
+}, { passive: true });
 
 // ======================== TYPEWRITER EFFECT ========================
 const roles = [
@@ -109,125 +120,6 @@ function typewriter() {
 
 // Start typewriter on DOM ready
 document.addEventListener('DOMContentLoaded', typewriter);
-
-// ======================== PARTICLE BACKGROUND ========================
-class ParticleNetwork {
-  constructor() {
-    this.canvas = document.getElementById('particleCanvas');
-    if (!this.canvas) return;
-
-    this.ctx = this.canvas.getContext('2d');
-    this.particles = [];
-    this.particleCount = 100;
-    this.connectionDistance = 100;
-    this.mouseX = 0;
-    this.mouseY = 0;
-
-    this.init();
-  }
-
-  init() {
-    this.resizeCanvas();
-    this.createParticles();
-    this.animate();
-    window.addEventListener('resize', () => this.resizeCanvas());
-    document.addEventListener('mousemove', (e) => {
-      this.mouseX = e.clientX;
-      this.mouseY = e.clientY;
-    });
-  }
-
-  resizeCanvas() {
-    this.canvas.width = window.innerWidth;
-    this.canvas.height = window.innerHeight;
-  }
-
-  createParticles() {
-    this.particles = [];
-    for (let i = 0; i < this.particleCount; i++) {
-      this.particles.push({
-        x: Math.random() * this.canvas.width,
-        y: Math.random() * this.canvas.height,
-        size: Math.random() * 1.5 + 0.5,
-        speedX: (Math.random() - 0.5) * 0.3,
-        speedY: (Math.random() - 0.5) * 0.3,
-        opacity: Math.random() * 0.5 + 0.2
-      });
-    }
-  }
-
-  drawParticle(particle) {
-    this.ctx.fillStyle = `rgba(0, 212, 255, ${particle.opacity})`;
-    this.ctx.beginPath();
-    this.ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
-    this.ctx.fill();
-  }
-
-  drawConnections() {
-    for (let i = 0; i < this.particles.length; i++) {
-      for (let j = i + 1; j < this.particles.length; j++) {
-        const dx = this.particles[i].x - this.particles[j].x;
-        const dy = this.particles[i].y - this.particles[j].y;
-        const distance = Math.sqrt(dx * dx + dy * dy);
-
-        if (distance < this.connectionDistance) {
-          const opacity = (1 - distance / this.connectionDistance) * 0.2;
-          this.ctx.strokeStyle = `rgba(0, 212, 255, ${opacity})`;
-          this.ctx.lineWidth = 0.5;
-          this.ctx.beginPath();
-          this.ctx.moveTo(this.particles[i].x, this.particles[i].y);
-          this.ctx.lineTo(this.particles[j].x, this.particles[j].y);
-          this.ctx.stroke();
-        }
-      }
-    }
-  }
-
-  updateParticles() {
-    this.particles.forEach(particle => {
-      // Move particle
-      particle.x += particle.speedX;
-      particle.y += particle.speedY;
-
-      // Wrap around edges
-      if (particle.x > this.canvas.width) particle.x = 0;
-      if (particle.x < 0) particle.x = this.canvas.width;
-      if (particle.y > this.canvas.height) particle.y = 0;
-      if (particle.y < 0) particle.y = this.canvas.height;
-
-      // Mouse interaction
-      const dx = particle.x - this.mouseX;
-      const dy = particle.y - this.mouseY;
-      const distance = Math.sqrt(dx * dx + dy * dy);
-      if (distance < 150) {
-        const angle = Math.atan2(dy, dx);
-        const force = (150 - distance) / 150;
-        particle.speedX += Math.cos(angle) * force * 0.3;
-        particle.speedY += Math.sin(angle) * force * 0.3;
-      }
-
-      // Dampen velocity
-      particle.speedX *= 0.99;
-      particle.speedY *= 0.99;
-    });
-  }
-
-  animate() {
-    this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    
-    this.updateParticles();
-    
-    this.particles.forEach(particle => this.drawParticle(particle));
-    this.drawConnections();
-
-    requestAnimationFrame(() => this.animate());
-  }
-}
-
-// Initialize particle network on DOM ready
-document.addEventListener('DOMContentLoaded', () => {
-  new ParticleNetwork();
-});
 
 // ======================== SMOOTH SCROLLING ========================
 document.querySelectorAll('a[href^="#"]').forEach(anchor => {
@@ -376,7 +268,6 @@ function showNotification(message, type = 'info') {
     font-weight: 600;
     z-index: 1000;
     animation: slideIn 0.3s ease-out;
-    backdrop-filter: blur(10px);
     border: 1px solid ${type === 'error' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'};
   `;
   notification.textContent = message;
@@ -411,7 +302,7 @@ scrollToTopBtn.style.cssText = `
   opacity: 0;
   visibility: hidden;
   transition: all 0.3s ease;
-  box-shadow: 0 0 20px rgba(0, 212, 255, 0.3);
+  box-shadow: 0 4px 12px rgba(0, 212, 255, 0.2);
   display: flex;
   align-items: center;
   justify-content: center;
