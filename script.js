@@ -1,48 +1,84 @@
 /**
- * Premium Portfolio - Refactored JavaScript
- * Uses Vanilla JS only - No heavy libraries
- * Intersection Observer for scroll animations
+ * AI/ML portfolio interactions.
+ * The site stays dependency-free so it loads quickly on GitHub Pages.
  */
 
-// ======================== SCROLL REVEAL OBSERVER ========================
-// Initialize Intersection Observer for scroll reveal animations
+const PROFILE = {
+  github: 'https://github.com/danishansari-dev',
+  linkedin: 'https://linkedin.com/in/danishansari-dev',
+  leetcode: 'https://leetcode.com/u/danishansari-dev/',
+  portfolio: 'https://danishansari.dev',
+  phone: '+917300969491'
+};
+
+const roles = [
+  'AI/ML Engineer',
+  'Machine Learning Developer',
+  'Data Science Practitioner',
+  'Python Automation Builder',
+  'Model Deployment Learner'
+];
+
+const featuredProjects = [
+  {
+    name: 'Predictive Analytics Pipeline',
+    description: 'End-to-end ML workflow concept for cleaning data, training baseline models, comparing metrics, and preparing predictions for dashboards or APIs.',
+    tags: ['Python', 'Pandas', 'Scikit-learn'],
+    link: PROFILE.github
+  },
+  {
+    name: 'NLP Assistant Prototype',
+    description: 'Text intelligence project direction for summarization, semantic search, document Q&A, and structured insights from unstructured content.',
+    tags: ['NLP', 'Embeddings', 'LLMs'],
+    link: PROFILE.github
+  },
+  {
+    name: 'Computer Vision Starter',
+    description: 'Image classification and object-detection learning track focused on dataset preparation, model evaluation, and practical inference demos.',
+    tags: ['Vision', 'Deep Learning', 'Inference'],
+    link: PROFILE.github
+  },
+  {
+    name: 'AI Portfolio Deployment',
+    description: 'Production-minded portfolio system with static performance, accessible links, GitHub Pages hosting, and a clear AI/ML career narrative.',
+    tags: ['HTML', 'CSS', 'JavaScript'],
+    link: PROFILE.portfolio
+  }
+];
+
 const revealElements = document.querySelectorAll('[data-reveal]');
 const revealObserver = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      // Get delay from data attribute
-      const delay = entry.target.getAttribute('data-reveal-delay') || '0';
-      
-      // Apply delay if specified
-      if (delay !== '0') {
-        entry.target.style.transitionDelay = `${delay}ms`;
-      }
-      
-      // Add revealed class to trigger animation
-      entry.target.classList.add('revealed');
-      
-      // Stop observing this element after it's revealed (for performance)
-      revealObserver.unobserve(entry.target);
+    if (!entry.isIntersecting) return;
+
+    const delay = entry.target.getAttribute('data-reveal-delay') || '0';
+    if (delay !== '0') {
+      entry.target.style.transitionDelay = `${delay}ms`;
     }
+
+    entry.target.classList.add('revealed');
+    revealObserver.unobserve(entry.target);
   });
 }, {
-  threshold: 0.15, // Trigger when 15% of element is visible
-  rootMargin: '0px 0px -50px 0px' // Start revealing slightly before viewport
+  threshold: 0.15,
+  rootMargin: '0px 0px -50px 0px'
 });
 
-// Observe all reveal elements
 revealElements.forEach(el => revealObserver.observe(el));
 
-// ======================== MOBILE MENU TOGGLE ========================
 const navToggle = document.getElementById('navToggle');
 const navLinks = document.getElementById('navLinks');
+const navbar = document.querySelector('.navbar');
+let scrollTimeout;
+let roleIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
 
-if (navToggle) {
+if (navToggle && navLinks) {
   navToggle.addEventListener('click', () => {
     navLinks.classList.toggle('active');
   });
 
-  // Close menu when a link is clicked
   document.querySelectorAll('.nav-links a').forEach(link => {
     link.addEventListener('click', () => {
       navLinks.classList.remove('active');
@@ -50,12 +86,13 @@ if (navToggle) {
   });
 }
 
-// ======================== NAVBAR SCROLL EFFECT (THROTTLED) ========================
-const navbar = document.querySelector('.navbar');
-let scrollTimeout;
-
-// Throttle scroll events to every 100ms for better performance
+/**
+ * Keeps the fixed navigation readable once content scrolls under it.
+ * @returns {void}
+ */
 function throttledScrollHandler() {
+  if (!navbar) return;
+
   if (window.scrollY > 100) {
     navbar.classList.add('scrolled');
   } else {
@@ -64,142 +101,107 @@ function throttledScrollHandler() {
 }
 
 window.addEventListener('scroll', () => {
-  if (!scrollTimeout) {
-    scrollTimeout = setTimeout(() => {
-      throttledScrollHandler();
-      scrollTimeout = null;
-    }, 100);
-  }
+  if (scrollTimeout) return;
+
+  scrollTimeout = setTimeout(() => {
+    throttledScrollHandler();
+    scrollTimeout = null;
+  }, 100);
 }, { passive: true });
 
-// ======================== TYPEWRITER EFFECT ========================
-const roles = [
-  'Backend Engineer',
-  'Cyber Security Specialist',
-  'DevOps Enthusiast',
-  'Full Stack Developer',
-  'Cloud Architect'
-];
-
-let roleIndex = 0;
-let charIndex = 0;
-let isDeleting = false;
-
+/**
+ * Rotates AI/ML role labels so the hero communicates range without extra copy.
+ * @returns {void}
+ */
 function typewriter() {
   const typewriterEl = document.getElementById('typewriter');
   if (!typewriterEl) return;
 
   const currentRole = roles[roleIndex];
-
-  if (isDeleting) {
-    charIndex--;
-  } else {
-    charIndex++;
-  }
-
-  // Update text
+  charIndex = isDeleting ? charIndex - 1 : charIndex + 1;
   typewriterEl.textContent = currentRole.substring(0, charIndex);
 
-  // Determine typing speed
   let speed = isDeleting ? 40 : 80;
 
-  // If word is complete, prepare to delete
   if (!isDeleting && charIndex === currentRole.length) {
-    speed = 2000; // Pause at end
+    speed = 1800;
     isDeleting = true;
-  } 
-  // If word is deleted, move to next word
-  else if (isDeleting && charIndex === 0) {
+  } else if (isDeleting && charIndex === 0) {
     isDeleting = false;
     roleIndex = (roleIndex + 1) % roles.length;
-    speed = 500; // Pause before typing
+    speed = 450;
   }
 
   setTimeout(typewriter, speed);
 }
 
-// Start typewriter on DOM ready
-document.addEventListener('DOMContentLoaded', typewriter);
+/**
+ * Enables anchor navigation that feels like a single-page portfolio.
+ * @returns {void}
+ */
+function setupSmoothScrolling() {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      const target = document.querySelector(this.getAttribute('href'));
+      if (!target) return;
 
-// ======================== SMOOTH SCROLLING ========================
-document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-  anchor.addEventListener('click', function(e) {
-    e.preventDefault();
-    const target = document.querySelector(this.getAttribute('href'));
-    if (target) {
       target.scrollIntoView({
         behavior: 'smooth',
         block: 'start'
       });
-    }
+    });
   });
-});
-
-// ======================== GITHUB API - FETCH PROJECTS ========================
-async function fetchGitHubProjects() {
-  const username = 'danishansari-dev';
-  const projectsContainer = document.getElementById('projectsContainer');
-
-  if (!projectsContainer) return;
-
-  try {
-    const response = await fetch(`https://api.github.com/users/${username}/repos?sort=stars&per_page=6`, {
-      headers: {
-        'Accept': 'application/vnd.github.v3+json'
-      }
-    });
-
-    if (!response.ok) throw new Error('Failed to fetch repositories');
-
-    const repos = await response.json();
-
-    if (!Array.isArray(repos) || repos.length === 0) {
-      projectsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">No repositories found. Update the GitHub username in script.js to see your projects.</p>';
-      return;
-    }
-
-    projectsContainer.innerHTML = '';
-
-    repos.forEach((repo, index) => {
-      const card = createProjectCard(repo, index);
-      projectsContainer.appendChild(card);
-    });
-
-    // Re-observe new elements for scroll animation
-    document.querySelectorAll('[data-reveal]').forEach(el => {
-      if (!el.classList.contains('revealed')) {
-        revealObserver.observe(el);
-      }
-    });
-
-  } catch (error) {
-    console.error('Error fetching repositories:', error);
-    projectsContainer.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-secondary);">Unable to load projects. Please try again later.</p>';
-  }
 }
 
-function createProjectCard(repo, index) {
+/**
+ * Renders AI/ML portfolio cards so the page has relevant work even before GitHub API data loads.
+ * @returns {void}
+ */
+function renderFeaturedProjects() {
+  const projectsContainer = document.getElementById('projectsContainer');
+  if (!projectsContainer) return;
+
+  projectsContainer.innerHTML = '';
+
+  featuredProjects.forEach((project, index) => {
+    projectsContainer.appendChild(createProjectCard(project, index));
+  });
+
+  document.querySelectorAll('[data-reveal]').forEach(el => {
+    if (!el.classList.contains('revealed')) {
+      revealObserver.observe(el);
+    }
+  });
+}
+
+/**
+ * Builds one project card from trusted local project metadata.
+ * @param {{name: string, description: string, tags: string[], link: string}} project - Portfolio project data.
+ * @param {number} index - Position used to stagger reveal animation.
+ * @returns {HTMLDivElement} Project card element.
+ */
+function createProjectCard(project, index) {
   const card = document.createElement('div');
   card.className = 'project-card';
   card.setAttribute('data-reveal', 'fade-up');
-  card.setAttribute('data-reveal-delay', (index * 50).toString());
+  card.setAttribute('data-reveal-delay', (index * 75).toString());
 
-  const stars = repo.stargazers_count > 0 ? `${repo.stargazers_count} ⭐` : 'Repository';
+  const tags = project.tags
+    .map(tag => `<span>${escapeHtml(tag)}</span>`)
+    .join('');
 
   card.innerHTML = `
-    <h3>${escapeHtml(repo.name)}</h3>
-    <p>${escapeHtml(repo.description || 'No description available')}</p>
+    <h3>${escapeHtml(project.name)}</h3>
+    <p>${escapeHtml(project.description)}</p>
     <div class="project-meta">
-      <span class="project-date">Updated: ${new Date(repo.updated_at).toLocaleDateString()}</span>
-      <span class="project-stars">${stars}</span>
+      <span class="project-date">AI/ML Portfolio</span>
+      <span class="project-stars">Production Focus</span>
     </div>
-    <div class="tags">
-      ${repo.language ? `<span>${escapeHtml(repo.language)}</span>` : ''}
-      ${repo.topics?.slice(0, 2).map(topic => `<span>${escapeHtml(topic)}</span>`).join('') || '<span>Open Source</span>'}
-    </div>
+    <div class="tags">${tags}</div>
     <div class="project-links">
-      <a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">
-        <i class="fab fa-github"></i> View Code
+      <a href="${project.link}" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-github"></i> View Profile
       </a>
     </div>
   `;
@@ -207,9 +209,14 @@ function createProjectCard(repo, index) {
   return card;
 }
 
-// Escape HTML to prevent XSS
+/**
+ * Prevents project metadata from being interpreted as markup.
+ * @param {string} unsafe - Text that may contain HTML-reserved characters.
+ * @returns {string} Escaped text safe for insertion into card markup.
+ */
 function escapeHtml(unsafe) {
   if (!unsafe) return '';
+
   return unsafe
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -218,70 +225,6 @@ function escapeHtml(unsafe) {
     .replace(/'/g, '&#039;');
 }
 
-// Fetch projects on load
-document.addEventListener('DOMContentLoaded', fetchGitHubProjects);
-
-// ======================== CONTACT FORM ========================
-const contactForm = document.getElementById('contactForm');
-
-if (contactForm) {
-  contactForm.addEventListener('submit', function(e) {
-    e.preventDefault();
-
-    const nameInput = this.querySelector('input[type="text"]');
-    const emailInput = this.querySelector('input[type="email"]');
-    const messageInput = this.querySelector('textarea');
-
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const message = messageInput.value.trim();
-
-    if (!name || !email || !message) {
-      showNotification('Please fill in all fields', 'error');
-      return;
-    }
-
-    // Create mailto link
-    const mailtoLink = `mailto:danish@example.com?subject=${encodeURIComponent(`Contact from ${name}`)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
-    window.location.href = mailtoLink;
-
-    // Show success message
-    showNotification('Message sent! Opening your default email client...', 'success');
-
-    // Reset form
-    this.reset();
-  });
-}
-
-// Show notifications
-function showNotification(message, type = 'info') {
-  // Create notification element
-  const notification = document.createElement('div');
-  notification.style.cssText = `
-    position: fixed;
-    top: 20px;
-    right: 20px;
-    padding: 1rem 1.5rem;
-    background: ${type === 'error' ? 'rgba(239, 68, 68, 0.9)' : 'rgba(16, 185, 129, 0.9)'};
-    color: white;
-    border-radius: 8px;
-    font-weight: 600;
-    z-index: 1000;
-    animation: slideIn 0.3s ease-out;
-    border: 1px solid ${type === 'error' ? 'rgba(239, 68, 68, 0.3)' : 'rgba(16, 185, 129, 0.3)'};
-  `;
-  notification.textContent = message;
-
-  document.body.appendChild(notification);
-
-  // Remove after 3 seconds
-  setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s ease-out forwards';
-    setTimeout(() => notification.remove(), 300);
-  }, 3000);
-}
-
-// ======================== SCROLL TO TOP BUTTON ========================
 const scrollToTopBtn = document.createElement('button');
 scrollToTopBtn.innerHTML = '<i class="fas fa-chevron-up"></i>';
 scrollToTopBtn.className = 'scroll-to-top';
@@ -312,13 +255,9 @@ scrollToTopBtn.style.cssText = `
 document.body.appendChild(scrollToTopBtn);
 
 window.addEventListener('scroll', () => {
-  if (window.scrollY > 500) {
-    scrollToTopBtn.style.opacity = '1';
-    scrollToTopBtn.style.visibility = 'visible';
-  } else {
-    scrollToTopBtn.style.opacity = '0';
-    scrollToTopBtn.style.visibility = 'hidden';
-  }
+  const shouldShow = window.scrollY > 500;
+  scrollToTopBtn.style.opacity = shouldShow ? '1' : '0';
+  scrollToTopBtn.style.visibility = shouldShow ? 'visible' : 'hidden';
 });
 
 scrollToTopBtn.addEventListener('click', () => {
@@ -328,18 +267,20 @@ scrollToTopBtn.addEventListener('click', () => {
   });
 });
 
-// ======================== LOADING SCREEN ========================
 window.addEventListener('load', () => {
   const loadingScreen = document.getElementById('loading');
-  if (loadingScreen) {
-    setTimeout(() => {
-      loadingScreen.style.display = 'none';
-    }, 2500);
-  }
+  if (!loadingScreen) return;
+
+  setTimeout(() => {
+    loadingScreen.style.display = 'none';
+  }, 2200);
 });
 
-// ======================== CONSOLE MESSAGE ========================
-console.log('%c✨ Welcome to Danish Ansari\'s Premium Portfolio!', 'font-size: 18px; color: #00d4ff; font-weight: bold;');
-console.log('%c🚀 Built with Vanilla HTML, CSS & JavaScript', 'font-size: 14px; color: #9d4edd;');
-console.log('%c💡 No heavy libraries. Pure performance.', 'font-size: 14px; color: #00d4ff;');
+document.addEventListener('DOMContentLoaded', () => {
+  typewriter();
+  setupSmoothScrolling();
+  renderFeaturedProjects();
+});
 
+console.log('Welcome to Danish Ansari AI/ML Portfolio.');
+console.log('Built with vanilla HTML, CSS, and JavaScript for GitHub Pages.');
