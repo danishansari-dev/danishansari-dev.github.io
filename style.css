@@ -1004,6 +1004,70 @@ body {
   transform: translateY(-3px);
 }
 
+.profile-panel {
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: 0 8px 24px rgba(31, 41, 55, 0.08);
+}
+
+.panel-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  color: #7c3aed;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.75rem;
+  text-transform: uppercase;
+}
+
+.profile-panel h3 {
+  color: var(--text-primary);
+  font-size: 1.8rem;
+  line-height: 1.25;
+  margin-bottom: 1rem;
+}
+
+.profile-panel p {
+  color: var(--text-secondary);
+  margin-bottom: 1.5rem;
+}
+
+.profile-links {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+  margin-bottom: 1.5rem;
+}
+
+.profile-links a {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  min-height: 48px;
+  padding: 0.85rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  color: var(--text-primary);
+  font-weight: 700;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.profile-links a:hover {
+  border-color: #7c3aed;
+  color: #7c3aed;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(122, 60, 237, 0.1);
+}
+
+.profile-links i {
+  color: #7c3aed;
+}
+
 .contact-form {
   display: grid;
   gap: 1.5rem;
@@ -1436,6 +1500,10 @@ body {
 
   .skills-grid {
     grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+  }
+
+  .profile-links {
+    grid-template-columns: 1fr;
   }
 }
 
